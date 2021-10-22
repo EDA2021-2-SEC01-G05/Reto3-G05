@@ -29,10 +29,43 @@ import csv
 El controlador se encarga de mediar entre la vista y el modelo.
 """
 
-# Inicialización del Catálogo de libros
+#==================================================================================
+# Inicialización del Catálogo de avistamientos
+#==================================================================================
 
+def initCatalog():
+    """
+    Llama la funcion de inicializacion del catalogo del modelo.
+    """
+    catalog = model.newCatalog()
+    return catalog
+
+#==================================================================================
 # Funciones para la carga de datos
+#==================================================================================
 
-# Funciones de ordenamiento
+def loadData(catalog):
+    """
+    Carga los datos de los archivos y cargar los datos en la
+    estructura de datos
+    """
+    file = cf.data_dir + 'UFOS/UFOS-utf8-small.csv'
+    input_file = csv.DictReader(open(file, encoding='utf-8'))
+    for avistamiento in input_file:
+        model.addAvistamiento(catalog, avistamiento) 
 
-# Funciones de consulta sobre el catálogo
+#==================================================================================
+# Requerimientos
+#==================================================================================
+
+def firstFiveD(lista):
+    """
+    Retorna una lista con los tres primeros elementos de una lista.
+    """
+    return model.firstFiveD(lista)
+    
+def lastFiveD(lista):
+    """
+    Retorna una lista con los 3 ultimos elementos de una lista.
+    """
+    return model.lastFiveD(lista)
