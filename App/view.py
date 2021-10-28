@@ -40,26 +40,19 @@ operación solicitada
 #=================================================================================
 
 def printMenu():
+    print("*******************************************")
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- Requerimiento 1")
-    print("3- Requerimiento 2")
-    print("4- Requerimiento 3")
-    print("5- Requerimiento 4")
-    print("6- Requerimiento 5")
+    print("1- Inicializar Analizador")
+    print("2- Cargar información de Avistamientos")
+    print("3- Requerimiento 1")
+    print("4- Requerimiento 2")
+    print("5- Requerimiento 3")
+    print("6- Requerimiento 4")
+    print("7- Requerimiento 5")
+    print("0- Salir")
+    print("*******************************************")
 
-def initCatalog():
-    """
-    Inicializa el catalogo de obras
-    """
-    return controller.initCatalog()
-
-def loadData(catalog):
-    """
-    Carga las obras en la estructura de datos
-    """
-    return controller.loadData(catalog)
-
+UFOfile = 'UFOS/UFOS-utf8-small.csv'
 catalog = None
 
 #=================================================================================
@@ -83,20 +76,24 @@ def printData(avistamientos):
 #=================================================================================
 
 def cargaDatos():
-        catalog = initCatalog()
-        loadData(catalog)
-        lst = catalog['avistamientos']
-        first = controller.firstFiveD(lst)
-        last = controller.lastFiveD(lst)
-        print('Avistamientos cargados: ' + str(lt.size(lst)))
-        print("-" * 50)
-        print('Los 5 primeros avistamientos: ')
-        print("-" * 50)
-        printData(first)
-        print("-" * 50)
-        print('Los 5 ultimos avistamientos: ') 
-        print("-" * 50)
-        printData(last)
+    controller.loadData(catalog, UFOfile)
+    lst = catalog['avistamientos']
+    first = controller.firstFiveD(lst)
+    last = controller.lastFiveD(lst)
+    print("-" * 50)
+    print('Avistamientos cargados: ' + str(controller.viewsSize(catalog)))
+    print('Altura del arbol: ' + str(controller.indexHeight(catalog, "dateIndex")))
+    print('Elementos en el arbol: ' + str(controller.indexSize(catalog, "dateIndex")))
+    print('Menor Llave: ' + str(controller.minKey(catalog, "dateIndex")))
+    print('Mayor Llave: ' + str(controller.maxKey(catalog, "dateIndex")))
+    print("-" * 50)
+    print('Los 5 primeros avistamientos: ')
+    print("-" * 50)
+    printData(first)
+    print("-" * 50)
+    print('Los 5 ultimos avistamientos: ') 
+    print("-" * 50)
+    printData(last)
         
 #================================================================================
 # Menu principal
@@ -107,15 +104,16 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
 
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
-        start_time = time.process_time()
-        cargaDatos()
-        stop_time = time.process_time()
-        elapsed_time_mseg = (stop_time - start_time)*1000
-        print("Tiempo de carga de los datos: " + str(elapsed_time_mseg))
+        print("\nInicializando....")
+        catalog = controller.initCatalog()
 
     elif int(inputs[0]) == 2:
-        pass
+        print("\nCargando información de crimenes ....")
+        cargaDatos()
+
+    elif int(inputs[0]) == 3:
+        print('Altura del arbol de ciudades: ' + str(controller.indexHeight(catalog, "cityIndex")))
+        print('Elementos en el arbol de ciudades: ' + str(controller.indexSize(catalog, "cityIndex")))
 
     else:
         sys.exit(0)

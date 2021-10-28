@@ -47,13 +47,14 @@ def newCatalog():
     """ 
     """
     catalog = {'avistamientos': None,
-                'arbol': None}
+                'dateIndex': None}
 
     """
     """
     catalog["avistamientos"] = lt.newList()
-    catalog["arbol"] = om.newMap(omaptype='BST',
-                                      comparefunction=compareDates) 
+    catalog["dateIndex"] = om.newMap(omaptype='RBT',
+                                      comparefunction=compareDates)
+    catalog["cityIndex"] = om.newMap(omaptype="RBT")
     return catalog
 
 #==================================================================================
@@ -64,7 +65,8 @@ def addAvistamiento(catalog,avistamiento):
     """
     """
     lt.addLast(catalog['avistamientos'], avistamiento)
-    updateDateIndex(catalog['arbol'], avistamiento)
+    updateDateIndex(catalog['dateIndex'], avistamiento)
+    addCityIndex(catalog, avistamiento)
     return catalog
 
 def updateDateIndex(arbol, avistamiento):
@@ -113,8 +115,8 @@ def newDataEntry(avistamiento):
     entry = {'index': None, 'lst': None}
     entry['index'] = mp.newMap(numelements=30,
                                      maptype='PROBING',
-                                     comparefunction=None)
-    entry['lst'] = lt.newList()
+                                     comparefunction=compareCities)
+    entry['lst'] = lt.newList('SINGLE_LINKED', compareDates)
     return entry
 
 def newCityEntry(city, avistamiento):
@@ -124,8 +126,24 @@ def newCityEntry(city, avistamiento):
     """
     cityentry = {'city': None, 'lstcity': None}
     cityentry['city'] = city
-    cityentry['lstcity'] = lt.newList()
+    cityentry['lstcity'] = lt.newList('SINGLELINKED', compareCities)
     return cityentry
+
+def addCityIndex(catalog, avistamiento):
+    """
+    """
+    index = catalog["cityIndex"]
+    ciudad = avistamiento["city"]
+    occurreddate = avistamiento['datetime']
+    fecha = datetime.datetime.strptime(occurreddate, '%Y-%m-%d %H:%M:%S')
+    existcity = om.contains(index, ciudad)
+    if existcity:
+        dates = om.get(index, ciudad)["value"]
+    else:
+        dates = lt.newList()
+    lt.addLast(dates, fecha)
+    om.put(index, ciudad, dates)
+
 
 #==================================================================================
 # Funciones de comparacion
@@ -141,6 +159,15 @@ def compareDates(date1, date2):
         return 1
     else:
         return -1
+    
+def compareCities(city1, city2):
+    city = me.getKey(city2)
+    if (city1 == city):
+        return 0 
+    elif (city1 > city):
+        return 1
+    else:
+        return-1
 
 #==================================================================================
 # Consultar info, modificar datos
@@ -160,6 +187,42 @@ def lastFiveD(lista):
     last = lt.subList(lista,lt.size(lista)-4,5)
     return last
 
+def viewsSize(analyzer):
+    """
+    Número de crimenes
+    """
+    return lt.size(analyzer['avistamientos'])
+
+
+def indexHeight(analyzer, tipo):
+    """
+    Altura del arbol
+    """
+    return om.height(analyzer[tipo])
+
+
+def indexSize(analyzer, tipo):
+    """
+    Numero de elementos en el indice
+    """
+    return om.size(analyzer[tipo])
+
+
+def minKey(analyzer, tipo):
+    """
+    Llave mas pequena
+    """
+    return om.minKey(analyzer[tipo])
+
+
+def maxKey(analyzer, tipo):
+    """
+    Llave mas grande
+    """
+    return om.maxKey(analyzer[tipo])
+
 #==================================================================================
 # Requerimientos
 #==================================================================================
+
+#Requerimiento 1 

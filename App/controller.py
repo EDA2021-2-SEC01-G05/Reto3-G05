@@ -44,15 +44,17 @@ def initCatalog():
 # Funciones para la carga de datos
 #==================================================================================
 
-def loadData(catalog):
+def loadData(catalog, UFOfile):
     """
     Carga los datos de los archivos y cargar los datos en la
     estructura de datos
     """
-    file = cf.data_dir + 'UFOS/UFOS-utf8-small.csv'
-    input_file = csv.DictReader(open(file, encoding='utf-8'))
+    file = cf.data_dir + UFOfile
+    input_file = csv.DictReader(open(file, encoding="utf-8"),
+                                delimiter=",")
     for avistamiento in input_file:
-        model.addAvistamiento(catalog, avistamiento) 
+        model.addAvistamiento(catalog, avistamiento)
+    return catalog
 
 #==================================================================================
 # Requerimientos
@@ -69,3 +71,37 @@ def lastFiveD(lista):
     Retorna una lista con los 3 ultimos elementos de una lista.
     """
     return model.lastFiveD(lista)
+
+def viewsSize(catalog):
+    """
+    Numero de crimenes leidos
+    """
+    return model.viewsSize(catalog)
+
+
+def indexHeight(catalog, tipo):
+    """
+    Altura del indice (arbol)
+    """
+    return model.indexHeight(catalog, tipo)
+
+
+def indexSize(catalog, tipo):
+    """
+    Numero de nodos en el arbol
+    """
+    return model.indexSize(catalog, tipo)
+
+
+def minKey(catalog, tipo):
+    """
+    La menor llave del arbol
+    """
+    return model.minKey(catalog, tipo)
+
+
+def maxKey(catalog, tipo):
+    """
+    La mayor llave del arbol
+    """
+    return model.maxKey(catalog, tipo)
