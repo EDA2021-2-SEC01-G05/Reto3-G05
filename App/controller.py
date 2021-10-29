@@ -60,48 +60,24 @@ def loadData(catalog, UFOfile):
 # Requerimientos
 #==================================================================================
 
-def firstFiveD(lista):
+def firstnD(lista,n):
     """
     Retorna una lista con los tres primeros elementos de una lista.
     """
-    return model.firstFiveD(lista)
+    return model.firstnD(lista,n)
     
-def lastFiveD(lista):
+def lastnD(lista,n):
     """
     Retorna una lista con los 3 ultimos elementos de una lista.
     """
-    return model.lastFiveD(lista)
+    return model.lastnD(lista,n)
 
-def viewsSize(catalog):
+def maxDurationD(catalog):
     """
-    Numero de crimenes leidos
     """
-    return model.viewsSize(catalog)
+    return model.maxDurationD(catalog)
 
-
-def indexHeight(catalog, tipo):
+def req2(catalog,minimo,maximo):
     """
-    Altura del indice (arbol)
     """
-    return model.indexHeight(catalog, tipo)
-
-
-def indexSize(catalog, tipo):
-    """
-    Numero de nodos en el arbol
-    """
-    return model.indexSize(catalog, tipo)
-
-
-def minKey(catalog, tipo):
-    """
-    La menor llave del arbol
-    """
-    return model.minKey(catalog, tipo)
-
-
-def maxKey(catalog, tipo):
-    """
-    La mayor llave del arbol
-    """
-    return model.maxKey(catalog, tipo)
+    return model.req2(catalog,minimo,maximo)

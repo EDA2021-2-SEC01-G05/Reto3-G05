@@ -24,7 +24,7 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
-import time
+from DISClib.ADT import orderedmap as om
 assert cf
 
 
@@ -71,6 +71,17 @@ def printData(avistamientos):
     else:
         print ("No se encontraron avistamientos")
 
+def printDataReq2(avistamientos):
+    size = lt.size(avistamientos)
+    if size>0:
+        for avistamiento in lt.iterator(avistamientos):
+            if avistamiento is not None:
+                print ("Fecha-hora: " + avistamiento["datetime"] + ", Ciudad: " + avistamiento["city"]
+                    + ", Pais:  " + avistamiento["country"] + ", Duracion(seg): " + avistamiento["duration (seconds)"]
+                    + ", Forma: " + avistamiento["shape"])
+    else:
+        print ("No se encontraron avistamientos")
+
 #=================================================================================
 # Requerimientos
 #=================================================================================
@@ -78,14 +89,14 @@ def printData(avistamientos):
 def cargaDatos():
     controller.loadData(catalog, UFOfile)
     lst = catalog['avistamientos']
-    first = controller.firstFiveD(lst)
-    last = controller.lastFiveD(lst)
+    first = controller.firstnD(lst,5)
+    last = controller.lastnD(lst,5)
     print("-" * 50)
-    print('Avistamientos cargados: ' + str(controller.viewsSize(catalog)))
-    print('Altura del arbol: ' + str(controller.indexHeight(catalog, "dateIndex")))
-    print('Elementos en el arbol: ' + str(controller.indexSize(catalog, "dateIndex")))
-    print('Menor Llave: ' + str(controller.minKey(catalog, "dateIndex")))
-    print('Mayor Llave: ' + str(controller.maxKey(catalog, "dateIndex")))
+    print('Avistamientos cargados: ' + str(lt.size(catalog['avistamientos'])))
+    print('Altura del arbol: ' + str(om.height(catalog["durationIndex"])))
+    print('Elementos en el arbol: ' + str(om.size(catalog['durationIndex'])))
+    print('Menor Llave: ' + str(om.minKey(catalog['durationIndex'])))
+    print('Mayor Llave: ' + str(om.maxKey(catalog['durationIndex'])))
     print("-" * 50)
     print('Los 5 primeros avistamientos: ')
     print("-" * 50)
@@ -94,7 +105,28 @@ def cargaDatos():
     print('Los 5 ultimos avistamientos: ') 
     print("-" * 50)
     printData(last)
-        
+
+def req2(catalog,minimo,maximo):
+    max_d  = controller.maxDurationD(catalog)
+    lmaxd = lt.removeFirst(max_d)
+    nmaxd = lt.removeFirst(max_d)
+    datos = controller.req2(catalog,minimo,maximo)
+    n_rango = lt.removeFirst(datos)
+    primeros = lt.removeFirst(datos)
+    ultimos = lt.removeFirst(datos)
+    print("-" * 50)
+    print("El numero de avistamientos con la duracion (seg) mas larga registrada " + str(lmaxd) + " es: " + str(nmaxd))
+    print("-" * 50)
+    print("El numero de avistamientos en el rango " + str(minimo) + ", " + str(maximo) + " es: " + str(n_rango))
+    print("-" * 50)
+    print("Los primeros 3 avistamientos en el rango son: ")
+    print("-" * 50)
+    printDataReq2(primeros)
+    print("-" * 50)
+    print("Los ultimos 3 avistamientos en el rango son: ")
+    print("-" * 50)
+    printDataReq2(ultimos)
+
 #================================================================================
 # Menu principal
 #================================================================================
@@ -108,12 +140,13 @@ while True:
         catalog = controller.initCatalog()
 
     elif int(inputs[0]) == 2:
-        print("\nCargando información de crimenes ....")
+        print("\nCargando información de avistamientos ....")
         cargaDatos()
 
-    elif int(inputs[0]) == 3:
-        print('Altura del arbol de ciudades: ' + str(controller.indexHeight(catalog, "cityIndex")))
-        print('Elementos en el arbol de ciudades: ' + str(controller.indexSize(catalog, "cityIndex")))
+    elif int(inputs[0]) == 4:
+        minimo = input("Minimo: ")
+        maximo = input("Maximo: ")
+        req2(catalog,minimo,maximo)
 
     else:
         sys.exit(0)
