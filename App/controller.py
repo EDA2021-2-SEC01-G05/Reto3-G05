@@ -81,3 +81,13 @@ def req2(catalog,minimo,maximo):
     """
     """
     return model.req2(catalog,minimo,maximo)
+
+def fechaAntiguaD(catalog):
+    """
+    """
+    return model.fechaAntiguaD(catalog)
+
+def req4(catalog,minimo,maximo):
+    """
+    """
+    return model.req4(catalog,minimo,maximo)

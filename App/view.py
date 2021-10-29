@@ -93,10 +93,10 @@ def cargaDatos():
     last = controller.lastnD(lst,5)
     print("-" * 50)
     print('Avistamientos cargados: ' + str(lt.size(catalog['avistamientos'])))
-    print('Altura del arbol: ' + str(om.height(catalog["durationIndex"])))
-    print('Elementos en el arbol: ' + str(om.size(catalog['durationIndex'])))
-    print('Menor Llave: ' + str(om.minKey(catalog['durationIndex'])))
-    print('Mayor Llave: ' + str(om.maxKey(catalog['durationIndex'])))
+    print('Altura del arbol: ' + str(om.height(catalog["dateIndex"])))
+    print('Elementos en el arbol: ' + str(om.size(catalog['dateIndex'])))
+    print('Menor Llave: ' + str(om.minKey(catalog['dateIndex'])))
+    print('Mayor Llave: ' + str(om.maxKey(catalog['dateIndex'])))
     print("-" * 50)
     print('Los 5 primeros avistamientos: ')
     print("-" * 50)
@@ -127,6 +127,27 @@ def req2(catalog,minimo,maximo):
     print("-" * 50)
     printDataReq2(ultimos)
 
+def req4(catalog,minimo,maximo):
+    fa = controller.fechaAntiguaD(catalog)
+    f = lt.removeFirst(fa)
+    n = lt.removeFirst(fa)
+    datos = controller.req4(catalog,minimo,maximo)
+    n_rango = lt.removeFirst(datos)
+    primeros = lt.removeFirst(datos)
+    ultimos = lt.removeFirst(datos)
+    print("-" * 50)
+    print("El numero de avistamientos con la fecha mas antigua registrada " + str(f) + " es: " + str(n))
+    print("-" * 50)
+    print("El numero de avistamientos en el rango de fechas " + str(minimo) + ", " + str(maximo) + " es: " + str(n_rango))
+    print("-" * 50)
+    print("Los primeros 3 avistamientos en el rango son: ")
+    print("-" * 50)
+    printDataReq2(primeros)
+    print("-" * 50)
+    print("Los ultimos 3 avistamientos en el rango son: ")
+    print("-" * 50)
+    printDataReq2(ultimos)
+
 #================================================================================
 # Menu principal
 #================================================================================
@@ -144,9 +165,14 @@ while True:
         cargaDatos()
 
     elif int(inputs[0]) == 4:
-        minimo = input("Minimo: ")
-        maximo = input("Maximo: ")
+        minimo = input("Minima duracion: ")
+        maximo = input("Maxima duracion: ")
         req2(catalog,minimo,maximo)
+
+    elif int(inputs[0]) == 6:
+        minimo = input("Minima fecha: ")
+        maximo = input("Maxima fecha: ")
+        req4(catalog,minimo,maximo)
 
     else:
         sys.exit(0)
