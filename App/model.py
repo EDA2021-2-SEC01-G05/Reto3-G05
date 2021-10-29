@@ -84,11 +84,49 @@ def updateDurationIndexD(arbol, avistamiento):
     duracion = float(avistamiento['duration (seconds)']) 
     entry = om.get(arbol, duracion)
     if entry is None:
-        datentry = lt.newList()
+        datentry = newDurationD(duracion)
         om.put(arbol, duracion, datentry)
     else:
         datentry = me.getValue(entry)
-    lt.addLast(datentry,avistamiento)
+    addDurationIndexD(datentry,avistamiento)
+    return arbol
+
+def addDurationIndexD(datentry,avistamiento):
+    lst = datentry['lst']
+    lt.addLast(lst, avistamiento)
+    index = datentry['index']
+    countryentry = mp.get(index, avistamiento['country'])
+    if (countryentry is None):
+        entry = newCountryD(avistamiento['country'])
+        lt.addLast(entry['lstpais'], avistamiento)
+        mp.put(index, avistamiento['country'], entry)
+    else:
+        entry = me.getValue(countryentry)
+        lt.addLast(entry['lstpais'], avistamiento)
+    return datentry
+
+def newDurationD(duracion):
+    """
+    Crea una entrada en el indice por duracion, es decir en el arbol
+    binario.
+    """
+    entry = {'index': None, 'lst': None}
+    entry['index'] = mp.newMap(numelements=30,
+                                     maptype='PROBING',
+                                     comparefunction=compareCountryD)
+    entry['lst'] = lt.newList('SINGLE_LINKED')
+    return entry
+
+def newCountryD(country):
+    """
+    Crea una entrada en el indice por pais, es decir 
+    en la tabla de hash que se encuentra en cada nodo del arbol.
+    """
+    countryentry = {'country': None, 'lstpais': None}
+    countryentry['country'] = country
+    countryentry['lstpais'] = lt.newList('SINGLE_LINKED')
+    return countryentry
+
 
 def updateDateIndexD(arbol, avistamiento):
     """
@@ -130,32 +168,16 @@ def compareDateD(f1, f2):
         return 1
     return -1
 
-def compareCountryCityD(a1,a2):
+def compareCountryD(pais1,p2):
     """
-    Compara dos avistamientos por pais y ciudad 
+    Compara dos paises. 
     """
-    c1 = str(a1['country'])
-    c2 = str(a2['country'])
-    if c1 == '':
-        c1 = 'Z'
-    if c2 == '':
-        c2 = 'Z'
-    if (c1 == c2):
-        city1 = str(a1['city'])
-        city2 = str(a2['city'])
-        if city1 == '':
-            city1 = 'Z'
-        if city2 == '':
-            city2 = 'Z'
-        if (city1 == city2):
-            return 0
-        elif (city1 > city2):
-            return 1
-        elif (city1 < city2):
-            return -1
-    elif c1 > c2:
+    pais2 = me.getKey(p2)
+    if (pais1 == pais2):
+        return 0
+    elif (pais1 > pais2):
         return 1
-    elif c1 < c2:
+    else:
         return -1
 
 #==================================================================================
@@ -201,7 +223,8 @@ def maxDurationD(catalog):
     llave = om.maxKey(mapa)
     pareja = om.get(mapa,llave)
     valor = me.getValue(pareja)
-    num = lt.size(valor)
+    lista = valor['lst']
+    num = lt.size(lista)
     resultado = lt.newList("LINKED_LIST")
     lt.addLast(resultado,llave)
     lt.addLast(resultado,num)
@@ -220,7 +243,8 @@ def req2(catalog,minimo,maximo):
     n = 0 
     for llave in lt.iterator(llaves):
         pareja = om.get(datos,llave)
-        lista = me.getValue(pareja)
+        valor = me.getValue(pareja)
+        lista = valor['lst']
         n += lt.size(lista)
     # sacar los primeros
     primeros = lt.newList()
@@ -228,10 +252,14 @@ def req2(catalog,minimo,maximo):
     while i < 3:
         llav = lt.removeFirst(llaves)
         par = om.get(datos,llav)
-        lst = me.getValue(par)
-        ms.sort(lst,compareCountryCityD)
-        for e in lt.iterator(lst):
-            lt.addLast(primeros,e)
+        val = me.getValue(par)
+        mapa = val['index']
+        paises = mp.keySet(mapa)
+        for pais in lt.iterator(paises):
+            pais_lista = mp.get(mapa,pais)
+            lista = me.getValue(pais_lista)['lstpais']
+            for e in lt.iterator(lista):
+                lt.addLast(primeros,e)
         i += 1
     # sacar los ultimos
     ultimos = lt.newList("LINKED_LIST")
@@ -239,10 +267,14 @@ def req2(catalog,minimo,maximo):
     while j < 3:
         lla = lt.removeLast(llaves)
         parej = om.get(datos,lla)
-        lsta = me.getValue(parej)
-        ms.sort(lsta,compareCountryCityD)
-        for el in lt.iterator(lsta):
-            lt.addLast(ultimos,el)
+        va = me.getValue(parej)
+        mapa2 = va['index']
+        paiss = mp.keySet(mapa2)
+        for p in lt.iterator(paiss):
+            pais_list = mp.get(mapa2,p)
+            l = me.getValue(pais_list)['lstpais']
+            for el in lt.iterator(l):
+                lt.addLast(ultimos,el)
         j += 1      
     # estipular el return
     resultado = lt.newList("LINKED_LIST")
