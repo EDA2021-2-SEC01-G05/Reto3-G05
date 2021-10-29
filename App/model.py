@@ -137,16 +137,16 @@ def compareCountryCityD(a1,a2):
     c1 = str(a1['country'])
     c2 = str(a2['country'])
     if c1 == '':
-        c1 = 'Z'
+        c1 = 'z'
     if c2 == '':
-        c2 = 'Z'
+        c2 = 'z'
     if (c1 == c2):
         city1 = str(a1['city'])
         city2 = str(a2['city'])
         if city1 == '':
-            city1 = 'Z'
+            city1 = 'z'
         if city2 == '':
-            city2 = 'Z'
+            city2 = 'z'
         if (city1 == city2):
             return 0
         elif (city1 > city2):
