@@ -52,7 +52,7 @@ def printMenu():
     print("0- Salir")
     print("*******************************************")
 
-UFOfile = 'UFOS/UFOS-utf8-small.csv'
+UFOfile = 'UFOS/UFOS-utf8-large.csv'
 catalog = None
 
 #=================================================================================
@@ -67,9 +67,10 @@ def printData(avistamientos):
                 print ("Fecha-hora: " + avistamiento["datetime"] + ", Ciudad: " + avistamiento["city"] + ", Estado: " + avistamiento['state']
                     + ", Pais:  " + avistamiento["country"] + ", Forma: " + avistamiento["shape"] + ", Duracion(seg): " + avistamiento["duration (seconds)"]
                     + ", Duracion(horas/min): " + avistamiento["duration (hours/min)"] + ", Comentarios: " + avistamiento["comments"] + ", Fecha de publicacion: " 
-                    + avistamiento["date posted"] + ", Latitud: " + avistamiento["latitude"] + ", Longitud: " + avistamiento["longitude"])
+                    + avistamiento["date posted"] + ", Latitud: " + avistamiento["latitude"] + ", Longitud: " + avistamiento["longitude"] + "\n")
     else:
         print ("No se encontraron avistamientos")
+
 
 #=================================================================================
 # Requerimientos
@@ -82,10 +83,6 @@ def cargaDatos():
     last = controller.lastFiveD(lst)
     print("-" * 50)
     print('Avistamientos cargados: ' + str(controller.viewsSize(catalog)))
-    print('Altura del arbol: ' + str(controller.indexHeight(catalog, "dateIndex")))
-    print('Elementos en el arbol: ' + str(controller.indexSize(catalog, "dateIndex")))
-    print('Menor Llave: ' + str(controller.minKey(catalog, "dateIndex")))
-    print('Mayor Llave: ' + str(controller.maxKey(catalog, "dateIndex")))
     print("-" * 50)
     print('Los 5 primeros avistamientos: ')
     print("-" * 50)
@@ -94,7 +91,60 @@ def cargaDatos():
     print('Los 5 ultimos avistamientos: ') 
     print("-" * 50)
     printData(last)
-        
+
+def Requerimiento1(catalog, ciudad):
+    avist_city = controller.getAvistamientoporCiudad(catalog, ciudad.lower())
+    first = controller.firstThreeN(avist_city)
+    last = controller.lastThreeN(avist_city)
+    total = controller.indexSize(catalog, "cityIndex")
+    print("-" * 50)
+    print("-" * 50 + "Requerimeinto 1 Answers" + ("-" * 50))
+    print("There are " + str(total) + " differrent cities with UFO sightings..." + "\n")
+    print("There are " + str(lt.size(avist_city)) + " at the: " + ciudad + " city.")    
+    print("-" * 50)
+    print('Los 3 primeros avistamientos: ')
+    print("-" * 50)
+    printData(first)
+    print("-" * 50)
+    print('Los 3 ultimos avistamientos: ') 
+    print("-" * 50)
+    printData(last)
+    print("-" * 50 + "\n")
+
+def Requerimiento3(catalog, hora_inicial, hora_final):
+    late = controller.maxKey(catalog, "hourIndex")
+    size_late = lt.size(controller.getAvistamientoPorHora(catalog, late))
+    org = controller.organizarAvistamientoPorRangoHora(catalog, hora_inicial, hora_final)
+    first = controller.firstThreeN(org)
+    last = controller.lastThreeN(org)
+    print("There are " + str(controller.indexSize(catalog, "hourIndex")) + " UFO sightings with different times [hh:mm:ss]...")
+    print("The latest UFO sightings time is: ")
+    print(str(late) + ": " + str(size_late) + "\n")
+    print("There are " + str(lt.size(org)) + " sightings " + hora_inicial + " and " + hora_final) 
+    print('Los 3 primeros avistamientos: ')
+    print("-" * 50)
+    printData(first)
+    print("-" * 50)
+    print('Los 3 ultimos avistamientos: ') 
+    print("-" * 50)
+    printData(last)
+    print("-" * 50 + "\n")
+
+def Requerimiento5(catalog, long0, long1, lat0, lat1):
+    lst = controller.avistamientosPorGeografia(catalog, long0, long1, lat0, lat1)
+    tamaño = lt.size(lst)
+    last = controller.lastFiveD(lst)
+    firts = controller.firstFiveD(lst)
+    print("=" * 50 + " Req No. 5 Answers " + "=" * 50)
+    print("There are " + str(tamaño) + " different UFO sightings in the current area")
+    print("-" * 50)
+    print('Los 5 primeros avistamientos: ')
+    print("-" * 50)
+    printData(firts)
+    print('Los 5 primeros avistamientos: ')
+    print("-" * 50)
+    printData(last)
+
 #================================================================================
 # Menu principal
 #================================================================================
@@ -108,13 +158,25 @@ while True:
         catalog = controller.initCatalog()
 
     elif int(inputs[0]) == 2:
-        print("\nCargando información de crimenes ....")
+        print("\nCargando información de avistamientos ....")
         cargaDatos()
 
     elif int(inputs[0]) == 3:
-        print('Altura del arbol de ciudades: ' + str(controller.indexHeight(catalog, "cityIndex")))
-        print('Elementos en el arbol de ciudades: ' + str(controller.indexSize(catalog, "cityIndex")))
+        print("-" * 50 + "Requerimeinto 1 Inputs" + ("-" * 50))
+        ciudad = input("UFO Sightings in the city of: ")
+        Requerimiento1(catalog, ciudad)
+    
+    elif int(inputs[0]) == 5:
+        hora_inicial = input("Límite inferior en formato HH: MM.: ")
+        hora_final = input("Límite superior en formato HH: MM.: ")
+        Requerimiento3(catalog, hora_inicial, hora_final)
 
+    elif int(inputs[0]) == 7:
+        long0 = input("Ingrese la longitud inicial: ")
+        long1 = input("Ingrese la longitud final: ")
+        lat0 = input("Ingrese la latitud inicial: ")
+        lat1 = input("Ingrese la latitud final: ")
+        Requerimiento5(catalog, long0, long1, lat0, lat1)
     else:
         sys.exit(0)
 sys.exit(0)

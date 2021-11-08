@@ -57,7 +57,7 @@ def loadData(catalog, UFOfile):
     return catalog
 
 #==================================================================================
-# Requerimientos
+# Consulta de información Arboles
 #==================================================================================
 
 def firstFiveD(lista):
@@ -105,3 +105,55 @@ def maxKey(catalog, tipo):
     La mayor llave del arbol
     """
     return model.maxKey(catalog, tipo)
+
+def KesySet(analizer, tipo):
+    """
+    Lista con las llaves de un indice.
+    """
+    return model.KesySet(analizer, tipo)
+
+#==================================================================================
+# Requerimientos
+#==================================================================================
+
+#Req 1
+
+def getAvistamientoporCiudad(catalog, ciudad_entry):
+    """
+    Este función se encarga de encontrar los avistamientos de una ciudad dada por el usuario.
+    """
+    return model.getAvistamientoporCiudad(catalog, ciudad_entry)
+
+def firstThreeN(lista):
+    """
+    Retorna una lista con los 5 primeros elementos de una lista.
+    """
+    return model.firstThreeN(lista)
+
+def lastThreeN(lista):
+    """
+    Retorna una lista con los 5 ultimos elementos de una lista.
+    """
+    return model.lastThreeN(lista)
+
+#Req 3
+
+def getAvistamientoPorHora(catalog, hora_entry):
+    """
+    Esta función se encarga de encontrar los avistamientos de una hora dada por el usuario.
+    """
+    return model.getAvistamientoPorHora(catalog, hora_entry)
+
+def organizarAvistamientoPorRangoHora(catalog, hora_inicial, hora_final):
+    """
+    Organiza y retorna los avistamientos que esten en un rango de 
+    una hora inicial y una hora final.
+    """
+    return model.organizarAvistamientoPorRangoHora(catalog, hora_inicial, hora_final)
+
+def avistamientosPorGeografia(catalog, long0, long1, lat0, lat1):
+    """
+    Esta función devuelve una lista con los avistamientos que
+    se encuentran en un rango de latitudes y longitudes. 
+    """
+    return model.avistamientosPorGeografia(catalog, long0, long1, lat0, lat1)
