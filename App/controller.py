@@ -112,6 +112,23 @@ def KesySet(analizer, tipo):
     """
     return model.KesySet(analizer, tipo)
 
+def firstnD(lista,n):
+    """
+    Retorna una lista con los tres primeros elementos de una lista.
+    """
+    return model.firstnD(lista,n)
+    
+def lastnD(lista,n):
+    """
+    Retorna una lista con los 3 ultimos elementos de una lista.
+    """
+    return model.lastnD(lista,n)
+
+def maxDurationD(catalog):
+    """
+    """
+    return model.maxDurationD(catalog)
+
 #==================================================================================
 # Requerimientos
 #==================================================================================
@@ -136,6 +153,18 @@ def lastThreeN(lista):
     """
     return model.lastThreeN(lista)
 
+#Req 2
+
+def req2(catalog,minimo,maximo):
+    """
+    """
+    return model.req2(catalog,minimo,maximo)
+
+def fechaAntiguaD(catalog):
+    """
+    """
+    return model.fechaAntiguaD(catalog)
+
 #Req 3
 
 def getAvistamientoPorHora(catalog, hora_entry):
@@ -150,6 +179,15 @@ def organizarAvistamientoPorRangoHora(catalog, hora_inicial, hora_final):
     una hora inicial y una hora final.
     """
     return model.organizarAvistamientoPorRangoHora(catalog, hora_inicial, hora_final)
+
+#Req 4
+
+def req4(catalog,minimo,maximo):
+    """
+    """
+    return model.req4(catalog,minimo,maximo)
+
+#Req 5
 
 def avistamientosPorGeografia(catalog, long0, long1, lat0, lat1):
     """

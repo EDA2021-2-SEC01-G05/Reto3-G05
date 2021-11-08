@@ -52,7 +52,7 @@ def printMenu():
     print("0- Salir")
     print("*******************************************")
 
-UFOfile = 'UFOS/UFOS-utf8-large.csv'
+UFOfile = 'UFOS/UFOS-utf8-small.csv'
 catalog = None
 
 #=================================================================================
@@ -71,6 +71,16 @@ def printData(avistamientos):
     else:
         print ("No se encontraron avistamientos")
 
+def printDataReq2(avistamientos):
+    size = lt.size(avistamientos)
+    if size>0:
+        for avistamiento in lt.iterator(avistamientos):
+            if avistamiento is not None:
+                print ("Fecha-hora: " + avistamiento["datetime"] + ", Ciudad: " + avistamiento["city"]
+                    + ", Pais:  " + avistamiento["country"] + ", Duracion(seg): " + avistamiento["duration (seconds)"]
+                    + ", Forma: " + avistamiento["shape"])
+    else:
+        print ("No se encontraron avistamientos")
 
 #=================================================================================
 # Requerimientos
@@ -111,6 +121,27 @@ def Requerimiento1(catalog, ciudad):
     printData(last)
     print("-" * 50 + "\n")
 
+def req2(catalog,minimo,maximo):
+    max_d  = controller.maxDurationD(catalog)
+    lmaxd = lt.removeFirst(max_d)
+    nmaxd = lt.removeFirst(max_d)
+    datos = controller.req2(catalog,minimo,maximo)
+    n_rango = lt.removeFirst(datos)
+    primeros = lt.removeFirst(datos)
+    ultimos = lt.removeFirst(datos)
+    print("-" * 50)
+    print("El numero de avistamientos con la duracion (seg) mas larga registrada " + str(lmaxd) + " es: " + str(nmaxd))
+    print("-" * 50)
+    print("El numero de avistamientos en el rango " + str(minimo) + ", " + str(maximo) + " es: " + str(n_rango))
+    print("-" * 50)
+    print("Los primeros 3 avistamientos en el rango son: ")
+    print("-" * 50)
+    printDataReq2(primeros)
+    print("-" * 50)
+    print("Los ultimos 3 avistamientos en el rango son: ")
+    print("-" * 50)
+    printDataReq2(ultimos)
+
 def Requerimiento3(catalog, hora_inicial, hora_final):
     late = controller.maxKey(catalog, "hourIndex")
     size_late = lt.size(controller.getAvistamientoPorHora(catalog, late))
@@ -129,6 +160,27 @@ def Requerimiento3(catalog, hora_inicial, hora_final):
     print("-" * 50)
     printData(last)
     print("-" * 50 + "\n")
+
+def req4(catalog,minimo,maximo):
+    fa = controller.fechaAntiguaD(catalog)
+    f = lt.removeFirst(fa)
+    n = lt.removeFirst(fa)
+    datos = controller.req4(catalog,minimo,maximo)
+    n_rango = lt.removeFirst(datos)
+    primeros = lt.removeFirst(datos)
+    ultimos = lt.removeFirst(datos)
+    print("-" * 50)
+    print("El numero de avistamientos con la fecha mas antigua registrada " + str(f) + " es: " + str(n))
+    print("-" * 50)
+    print("El numero de avistamientos en el rango de fechas " + str(minimo) + ", " + str(maximo) + " es: " + str(n_rango))
+    print("-" * 50)
+    print("Los primeros 3 avistamientos en el rango son: ")
+    print("-" * 50)
+    printDataReq2(primeros)
+    print("-" * 50)
+    print("Los ultimos 3 avistamientos en el rango son: ")
+    print("-" * 50)
+    printDataReq2(ultimos)
 
 def Requerimiento5(catalog, long0, long1, lat0, lat1):
     lst = controller.avistamientosPorGeografia(catalog, long0, long1, lat0, lat1)
@@ -166,10 +218,20 @@ while True:
         ciudad = input("UFO Sightings in the city of: ")
         Requerimiento1(catalog, ciudad)
     
+    elif int(inputs[0]) == 4:
+        minimo = input("Minima duracion: ")
+        maximo = input("Maxima duracion: ")
+        req2(catalog,minimo,maximo)
+    
     elif int(inputs[0]) == 5:
         hora_inicial = input("Límite inferior en formato HH: MM.: ")
         hora_final = input("Límite superior en formato HH: MM.: ")
         Requerimiento3(catalog, hora_inicial, hora_final)
+    
+    elif int(inputs[0]) == 6:
+        minimo = input("Minima fecha: ")
+        maximo = input("Maxima fecha: ")
+        req4(catalog,minimo,maximo)
 
     elif int(inputs[0]) == 7:
         long0 = input("Ingrese la longitud inicial: ")
