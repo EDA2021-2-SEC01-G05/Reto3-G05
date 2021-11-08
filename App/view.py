@@ -52,7 +52,7 @@ def printMenu():
     print("0- Salir")
     print("*******************************************")
 
-UFOfile = 'UFOS/UFOS-utf8-small.csv'
+UFOfile = 'UFOS/UFOS-utf8-large.csv'
 catalog = None
 
 #=================================================================================
@@ -211,34 +211,59 @@ while True:
 
     elif int(inputs[0]) == 2:
         print("\nCargando información de avistamientos ....")
+        start_time = time.process_time()
         cargaDatos()
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print("Tiempo de ejecución: " + str(elapsed_time_mseg))
 
     elif int(inputs[0]) == 3:
         print("-" * 50 + "Requerimeinto 1 Inputs" + ("-" * 50))
         ciudad = input("UFO Sightings in the city of: ")
+        start_time = time.process_time()
         Requerimiento1(catalog, ciudad)
-    
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print("Tiempo de ejecución: " + str(elapsed_time_mseg))
+
     elif int(inputs[0]) == 4:
         minimo = input("Minima duracion: ")
         maximo = input("Maxima duracion: ")
+        start_time = time.process_time()
         req2(catalog,minimo,maximo)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print("Tiempo de ejecución: " + str(elapsed_time_mseg))
     
     elif int(inputs[0]) == 5:
         hora_inicial = input("Límite inferior en formato HH: MM.: ")
         hora_final = input("Límite superior en formato HH: MM.: ")
+        start_time = time.process_time()
         Requerimiento3(catalog, hora_inicial, hora_final)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print("Tiempo de ejecución: " + str(elapsed_time_mseg))
     
     elif int(inputs[0]) == 6:
         minimo = input("Minima fecha: ")
         maximo = input("Maxima fecha: ")
+        start_time = time.process_time()
         req4(catalog,minimo,maximo)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print("Tiempo de ejecución: " + str(elapsed_time_mseg))
 
     elif int(inputs[0]) == 7:
         long0 = input("Ingrese la longitud inicial: ")
         long1 = input("Ingrese la longitud final: ")
         lat0 = input("Ingrese la latitud inicial: ")
         lat1 = input("Ingrese la latitud final: ")
+        start_time = time.process_time()
         Requerimiento5(catalog, long0, long1, lat0, lat1)
+        stop_time = time.process_time()
+        elapsed_time_mseg = (stop_time - start_time)*1000
+        print("Tiempo de ejecución: " + str(elapsed_time_mseg))
+        
     else:
         sys.exit(0)
 sys.exit(0)
